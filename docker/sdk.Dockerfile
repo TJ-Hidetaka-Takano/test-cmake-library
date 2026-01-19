@@ -44,10 +44,11 @@ RUN apt-get update -qq \
   && rm -rf /var/lib/apt/lists/*
 
 # Installing Python packages
-# RUN pip3 install --no-cache-dir \
-#   jinja2 \
-#   lxml \
-#   setuptools
+# RUN printf "[global]\nbreak-system-packages = true\n" > /etc/pip.conf \
+#   && pip3 install --no-cache-dir \
+#     jinja2 \
+#     lxml \
+#     setuptools
 
 # Setting up no passwd sudoers
 RUN echo "Defaults:ALL env_keep += \"HTTP_PROXY HTTPS_PROXY http_proxy https_proxy no_proxy\"" \
@@ -60,37 +61,3 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["/bin/bash", "-li"]
 
 SHELL ["bash", "-c"]
-
-# --- YamlCpp ---
-# hadolint ignore=DL3003,SC1091
-# RUN mkdir -p /tmp/yaml-cpp/build \
-#   && curl -fsSL https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-0.7.0.tar.gz | tar xzC /tmp/yaml-cpp --strip-components=1 \
-#   && cd /tmp/yaml-cpp/build \
-#   && cmake \
-#     -DCMAKE_BUILD_TYPE=MinSizeRel \
-#     -DCMAKE_INSTALL_PREFIX=/usr .. \
-#   && cmake --build . \
-#   && cmake --install . \
-#   && cd /tmp && rm -rf yaml-cpp
-
-# --- gRPC ---
-# hadolint ignore=DL3003,SC2016
-# RUN cd /tmp \
-#   && git clone --depth=1 -b v1.52.1 --recursive https://github.com/grpc/grpc.git \
-#   && mkdir -p grpc/build && cd grpc/build \
-#   && cmake \
-#     -DCMAKE_BUILD_TYPE=MinSizeRel \
-#     -DgRPC_INSTALL=ON \
-#     -DgRPC_BUILD_TESTS=OFF \
-#     -DgRPC_BUILD_CSHARP_EXT=OFF \
-#     -DgRPC_BUILD_GRPC_CPP_PLUGIN=ON \
-#     -DgRPC_BUILD_GRPC_CSHARP_PLUGIN=OFF \
-#     -DgRPC_BUILD_GRPC_NODE_PLUGIN=OFF \
-#     -DgRPC_BUILD_GRPC_OBJECTIVE_C_PLUGIN=OFF \
-#     -DgRPC_BUILD_GRPC_PHP_PLUGIN=OFF \
-#     -DgRPC_BUILD_GRPC_PYTHON_PLUGIN=ON \
-#     -DgRPC_BUILD_GRPC_RUBY_PLUGIN=OFF \
-#     -DCMAKE_INSTALL_PREFIX=/usr .. \
-#   && cmake --build . \
-#   && cmake --install . \
-#   && cd /tmp && rm -rf grpc*

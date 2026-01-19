@@ -2,7 +2,7 @@ DEPS		= .env
 V			?= 0
 
 ifeq ($(shell expr $V \> 0),1)
-MKARGS		+= CMAKEFLAGS=-DCMAKE_VERBOSE_MAKEFILE=ON
+MKARGS		+= BUILD=debug
 endif
 
 .PHONY: all build build-test launch clean pre-commit
